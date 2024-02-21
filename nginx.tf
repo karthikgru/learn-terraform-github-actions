@@ -1,8 +1,11 @@
 data "terraform_remote_state" "eks" {
-  backend = "local"
+  backend = "remote"
 
   config = {
-    path = "../lab-terraform-eks-2/terraform.tfstate"
+    organization = "demo-kk"
+    workspaces = {
+      name = "gh-actions-demo"
+    }
   }
 }
 
