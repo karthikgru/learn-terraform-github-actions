@@ -63,12 +63,12 @@ module "vpc" {
   enable_dns_hostnames = true
 
   public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/cluster/${variable.cluster_name}" = "shared"
     "kubernetes.io/role/elb"                      = 1
   }
 
   private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/cluster/${variable.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"             = 1
   }
 }
@@ -77,7 +77,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.5.1"
 
-  cluster_name    = local.cluster_name
+  cluster_name    = variable.cluster_name
   cluster_version = "1.24"
 
   vpc_id                         = module.vpc.vpc_id

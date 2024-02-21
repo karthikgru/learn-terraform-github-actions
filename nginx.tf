@@ -1,16 +1,5 @@
-data "terraform_remote_state" "eks" {
-  backend = "remote"
-
-  config = {
-    organization = "demo-kk"
-    workspaces = {
-      name = "gh-actions-demo"
-    }
-  }
-}
-
-data "aws_eks_cluster" "cluster" {
-  name = data.terraform_remote_state.eks.outputs.cluster_name
+data "aws_eks_cluster" "cluster"{
+    name = var.cluster_name
 }
 
 provider "kubernetes" {
