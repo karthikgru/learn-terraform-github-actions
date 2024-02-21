@@ -1,1 +1,1 @@
-# Automate Terraform with GitHub Actions
+# Automate TF with GitHub Actions
