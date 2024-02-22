@@ -1,5 +1,5 @@
 data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_name
+  name = guru-eks-new.cluster_name
 }
 
 provider "helm" {
