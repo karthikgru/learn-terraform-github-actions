@@ -1,15 +1,5 @@
-data "terraform_remote_state" "main_state" {
-  backend = "remote"
-  config = {
-    organization = "demo-kk"
-    workspaces = {
-      name = "gh-actions-demo"
-    }
-  }
-}
-
 data "aws_eks_cluster" "cluster" {
-  name = data.terraform_remote_state.main_state.outputs.cluster_name
+  name = module.eks.cluster_name
 }
 
 provider "helm" {
