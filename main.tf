@@ -94,6 +94,7 @@ module "eks" {
       name = "node-group-1"
 
       instance_types = ["t3.small"]
+      cluster_version = "1.24"
 
       min_size     = 1
       max_size     = 3
@@ -104,10 +105,12 @@ module "eks" {
       name = "node-group-2"
 
       instance_types = ["t3.small"]
+      cluster_version = "1.24"
 
       min_size     = 1
       max_size     = 2
       desired_size = 1
+      
     }
   }
 }
