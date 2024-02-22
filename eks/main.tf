@@ -133,8 +133,3 @@ resource "aws_eks_addon" "ebs-csi" {
     "terraform" = "true"
   }
 }
-
-module "argocd-setup" {
-  source = "./argocd-setup"
-  cluster_name = module.eks.cluster_name
-}
