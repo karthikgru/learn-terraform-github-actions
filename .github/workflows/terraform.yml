@@ -19,29 +19,33 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          # terraform_version: 0.13.0:
+          # terraform_version: 0.13.0: (Optional, specify if needed)
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
         id: fmt
+        working-directory: eks  # Change working directory
         run: |
           export TF_LOG=DEBUG
           terraform fmt -check
 
       - name: Terraform Init
         id: init
+        working-directory: eks  # Change working directory
         run: |
           export TF_LOG=DEBUG
           terraform init
-      
+
       - name: Terraform Validate
         id: validate
+        working-directory: eks  # Change working directory
         run: |
           export TF_LOG=DEBUG
           terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
+        working-directory: eks  # Change working directory
         if: github.event_name == 'pull_request'
         run: |
           export TF_LOG=DEBUG
@@ -56,20 +60,20 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            const output = `#### Terraform Format and Style \`${{ steps.fmt.outcome }}\`
+                          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+                          #### Terraform Validation \`${{ steps.validate.outcome }}\`
+                          #### Terraform Plan \`${{ steps.plan.outcome }}\`
 
-            <details><summary>Show Plan</summary>
+                          <details><summary>Show Plan</summary>
 
-            \`\`\`terraform\n
-            ${process.env.PLAN}
-            \`\`\`
+                          \`\`\`terraform\n
+                          ${process.env.PLAN}
+                          \`\`\`
 
-            </details>
+                          </details>
 
-            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+                          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -82,6 +86,12 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      - name: Terraform Apply
+      - name: Terraform Apply (Main Branch Push)
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        working-directory: eks  # Change working directory
+        run: terraform apply -auto-approve -input=false
+
+      - name: Terraform Apply (Pull Request Merge)
+        if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+        working-directory: eks  # Change working directory
         run: terraform apply -auto-approve -input=false
