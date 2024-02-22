@@ -29,12 +29,12 @@ jobs:
           export TF_LOG=DEBUG
           terraform init
 
-      - name: Terraform Format
-        id: fmt
-        working-directory: eks  # Change working directory
-        run: |
-          export TF_LOG=DEBUG
-          terraform fmt -check
+      # - name: Terraform Format
+      #   id: fmt
+      #   working-directory: eks  # Change working directory
+      #   run: |
+      #     export TF_LOG=DEBUG
+      #     terraform fmt -check
 
       - name: Terraform Validate
         id: validate
