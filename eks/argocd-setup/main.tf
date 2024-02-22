@@ -1,10 +1,20 @@
+data "terraform_remote_state" "main_state" {
+  backend = "remote"
+  config = {
+    organization = "demo-kk"
+    workspaces = {
+      name = "gh-actions-demo"
+    }
+  }
+}
+
 data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_name
+  name = data.terraform_remote_state.main_state.outputs.cluster_name
 }
 
 provider "helm" {
   kubernetes {
-    host                   = module.eks.cluster_endpoint
+    host                   = data.aws_eks_cluster.cluster.endpoint
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
     exec {
       api_version = "client.authentication.k8s.io/v1beta1"
